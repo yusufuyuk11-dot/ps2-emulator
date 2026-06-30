@@ -1,0 +1,22 @@
+name: PS2 ELF Compiler
+name: PS2 ELF Compiler
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ps2dev/ps2dev:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Compile ELF
+        run: |
+          mips64r5900el-ps2-elf-gcc main.c -o ps2_emulator.elf -I$PS2SDK/ee/include -L$PS2SDK/ee/lib -lkernel -ldebug
+
+      - name: Upload ELF Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ps2-elf-file
+          path: ps2_emulator.elf
